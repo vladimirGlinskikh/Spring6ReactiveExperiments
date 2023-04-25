@@ -14,24 +14,20 @@ class PersonRepositoryImplTest {
     void testMonoByIdBlock() {
         Mono<Person> personMono = personRepository.getById(1);
         Person person = personMono.block();
-        System.out.println(person.toString());
+        assert person != null;
+        System.out.println(person);
     }
 
     @Test
     void testGetByIdSubscriber() {
         Mono<Person> personMono = personRepository.getById(1);
-        personMono.subscribe(person -> {
-            System.out.println(person.toString());
-        });
+        personMono.subscribe(person -> System.out.println(person.toString()));
     }
 
     @Test
     void testMapOperation() {
         Mono<Person> personMono = personRepository.getById(2);
-        personMono.map(Person::getFirstName)
-                .subscribe(firstName -> {
-                    System.out.println(firstName);
-                });
+        personMono.map(Person::getFirstName).subscribe(System.out::println);
     }
 
     @Test
@@ -40,46 +36,54 @@ class PersonRepositoryImplTest {
 
         Person person = personFlux.blockFirst();
 
-        System.out.println(person.toString());
+        assert person != null;
+        System.out.println(person);
     }
 
     @Test
     void testFluxSubscriber() {
         Flux<Person> personFlux = personRepository.findAll();
-        personFlux.subscribe(person -> {
-            System.out.println(person.toString());
-        });
+        personFlux.subscribe(person -> System.out.println(person.toString()));
     }
 
     @Test
     void testFluxMap() {
         Flux<Person> personFlux = personRepository.findAll();
-        personFlux.map(Person::getFirstName)
-                .subscribe(firstName -> System.out.println(firstName));
+        personFlux.map(Person::getFirstName).subscribe(System.out::println);
     }
 
     @Test
     void testFluxToList() {
         Flux<Person> personFlux = personRepository.findAll();
         Mono<List<Person>> listMono = personFlux.collectList();
-        listMono.subscribe(list -> {
-            list.forEach(person -> System.out.println(person.getFirstName()));
-        });
+        listMono.subscribe(list -> list.forEach(person -> System.out.println(person.getFirstName())));
     }
 
     @Test
     void testFilterOnName() {
-        personRepository.findAll()
-                .filter(person -> person.getFirstName().equals("Petr"))
-                .subscribe(person -> System.out.println(person.getFirstName()));
+        personRepository.findAll().filter(person -> person.getFirstName().equals("Petr")).subscribe(person -> System.out.println(person.getFirstName()));
     }
 
     @Test
     void testGetById() {
-        Mono<Person> personMono = personRepository
-                .findAll()
-                .filter(person -> person.getFirstName().equals("Laura"))
-                .next();
+        Mono<Person> personMono = personRepository.findAll().filter(person -> person.getFirstName().equals("Laura")).next();
         personMono.subscribe(person -> System.out.println(person.getId()));
     }
+
+    @Test
+    void testFindPersonByIdNotFound() {
+        Flux<Person> personFlux = personRepository.findAll();
+        final Integer id = 9;
+        Mono<Person> personMono = personFlux.filter(person -> person.getId().equals(id)).single()
+                .doOnError(throwable -> {
+                    System.err.println("Error occurred in flux");
+                    System.err.println(throwable.toString());
+                });
+        personMono.subscribe(person -> System.out.println(person.toString()), throwable -> {
+            System.err.println("Error occurred in the mono");
+            System.err.println(throwable.toString());
+        });
+    }
+
+
 }
