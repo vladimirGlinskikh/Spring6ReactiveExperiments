@@ -32,4 +32,18 @@ public class BeerServiceImpl implements BeerService {
         return beerRepository.save(beerMapper.beerDTOTOBeer(beerDTO))
                 .map(beerMapper::beerTOBeerDTO);
     }
+
+    @Override
+    public Mono<BeerDTO> updateBeer(Integer beerId, BeerDTO beerDTO) {
+        return beerRepository.findById(beerId)
+                .map(foundBeer -> {
+                    foundBeer.setBeerName(beerDTO.getBeerName());
+                    foundBeer.setBeerStyle(beerDTO.getBeerStyle());
+                    foundBeer.setPrice(beerDTO.getPrice());
+                    foundBeer.setUpc(beerDTO.getUpc());
+                    foundBeer.setQuantityOnHand(beerDTO.getQuantityOnHand());
+                    return foundBeer;
+                }).flatMap(beerRepository::save)
+                .map(beerMapper::beerTOBeerDTO);
+    }
 }
