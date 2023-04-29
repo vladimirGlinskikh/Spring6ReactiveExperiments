@@ -4,6 +4,7 @@ import kz.zhelezyaka.spring6reactiveexperiments.model.BeerDTO;
 import kz.zhelezyaka.spring6reactiveexperiments.services.BeerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
@@ -27,20 +28,20 @@ public class BeerController {
 
     @PatchMapping(BEER_PATH_ID)
     Mono<ResponseEntity<Void>> patchExistingBeer(@PathVariable Integer beerId,
-                                                 @RequestBody BeerDTO beerDTO) {
+                                                 @Validated @RequestBody BeerDTO beerDTO) {
         return beerService.patchBeer(beerId, beerDTO)
                 .map(updateDTO -> ResponseEntity.ok().build());
     }
 
     @PutMapping(BEER_PATH_ID)
     ResponseEntity<Void> updateExistingBeer(@PathVariable("beerId") Integer beerId,
-                                            @RequestBody BeerDTO beerDTO) {
+                                            @Validated @RequestBody BeerDTO beerDTO) {
         beerService.updateBeer(beerId, beerDTO).subscribe();
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(BEER_PATH)
-    ResponseEntity<Void> createNewBeer(@RequestBody BeerDTO beerDTO) {
+    ResponseEntity<Void> createNewBeer(@Validated @RequestBody BeerDTO beerDTO) {
         AtomicInteger atomicInteger = new AtomicInteger();
         beerService.saveNewBeer(beerDTO).subscribe(savedDTO -> {
             atomicInteger.set(savedDTO.getId());
