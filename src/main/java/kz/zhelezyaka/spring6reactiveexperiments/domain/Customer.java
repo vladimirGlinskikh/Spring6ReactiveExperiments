@@ -4,13 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 @Data
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class Person {
-    private Integer id;
-    private String firstName;
-    private String lastName;
+@AllArgsConstructor
+@Builder
+public class Customer {
+
+    @Id
+    private int id;
+    private String customerName;
+    private String email;
 }
