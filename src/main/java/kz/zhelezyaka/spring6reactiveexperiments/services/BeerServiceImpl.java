@@ -72,4 +72,9 @@ public class BeerServiceImpl implements BeerService {
                 }).flatMap(beerRepository::save)
                 .map(beerMapper::beerTOBeerDTO);
     }
+
+    @Override
+    public Mono<Void> deleteBeerById(Integer beerId) {
+        return beerRepository.deleteById(beerId);
+    }
 }
