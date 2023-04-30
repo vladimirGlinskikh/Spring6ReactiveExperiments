@@ -37,7 +37,7 @@ public class BeerController {
     ResponseEntity<Void> updateExistingBeer(@PathVariable("beerId") Integer beerId,
                                             @Validated @RequestBody BeerDTO beerDTO) {
         beerService.updateBeer(beerId, beerDTO).subscribe();
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping(BEER_PATH)
