@@ -14,6 +14,11 @@ public class SecurityConfig {
     SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http.csrf().disable()
                 .authorizeExchange()
+                .pathMatchers("/swagger-ui.html",
+                        "/swagger-ui/",
+                        "/swagger-ui/**",
+                        "/v3/api-docs",
+                        "/v3/api-docs/**").permitAll()
                 .anyExchange().authenticated()
                 .and()
                 .oauth2ResourceServer().jwt();
