@@ -79,6 +79,16 @@
             <artifactId>spring-security-oauth2-client</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.oai</groupId>
+            <artifactId>swagger-request-validator-restassured</artifactId>
+            <version>2.32.0</version>
+        </dependency>
     </dependencies>
 
     <build>
